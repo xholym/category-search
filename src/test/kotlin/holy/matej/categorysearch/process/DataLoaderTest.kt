@@ -3,13 +3,14 @@ package holy.matej.categorysearch.process
 import holy.matej.categorysearch.lang.Language.*
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
+import java.nio.file.Path
 import java.util.stream.Collectors.toList
 import java.util.stream.Stream
 
 
 class DataLoaderTest {
 
-    val sut = DataLoader()
+    val sut = DataLoader(Path.of("src/test/resources"))
 
     @Test
     fun `return right data for english`() {

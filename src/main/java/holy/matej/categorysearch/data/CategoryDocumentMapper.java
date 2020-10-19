@@ -1,0 +1,22 @@
+package holy.matej.categorysearch.data;
+
+import org.apache.lucene.document.Document;
+import org.apache.lucene.document.Field;
+import org.apache.lucene.document.StringField;
+
+import java.util.List;
+
+public class CategoryDocumentMapper {
+
+    public Document toDoc(Category cat) {
+        var res = new Document();
+        // TODO maybe other fields
+        res.add(new StringField("name", cat.getName(), Field.Store.YES));
+
+        return new Document();
+    }
+
+    public Category toCategory(Document doc) {
+        return Category.of(doc.get("name"), List.of());
+    }
+}

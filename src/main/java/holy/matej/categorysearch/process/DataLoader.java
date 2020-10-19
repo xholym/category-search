@@ -1,26 +1,26 @@
 package holy.matej.categorysearch.process;
 
 import holy.matej.categorysearch.lang.Language;
+import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Objects;
 import java.util.stream.Stream;
 
+@RequiredArgsConstructor
 public class DataLoader {
+
+    private final Path dataDir;
 
     @SneakyThrows
     public Stream<String> load(Language lang) {
-        var file = getClass().getClassLoader()
-                .getResource(
+        var path = dataDir.resolve(
                         "article_categories_"
                                 + lang.name().toLowerCase() + ".nq"
                 );
-        var path = Path.of(Objects.requireNonNull(file).toURI());
-
         try {
 
             return Files.lines(path);

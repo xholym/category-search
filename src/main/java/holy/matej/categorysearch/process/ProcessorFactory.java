@@ -1,12 +1,14 @@
 package holy.matej.categorysearch.process;
 
+import java.nio.file.Path;
+
 public class ProcessorFactory {
 
-    public static Processor create() {
+    public static Processor create(Path dataDir) {
         return new Processor(
-                new DataLoader(),
+                new DataLoader(dataDir),
                 new Parser(),
-                new Indexer()
+                new Indexer(dataDir)
         );
     }
 }

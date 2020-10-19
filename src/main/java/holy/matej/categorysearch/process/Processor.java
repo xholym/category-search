@@ -3,6 +3,8 @@ package holy.matej.categorysearch.process;
 import holy.matej.categorysearch.lang.Language;
 import lombok.RequiredArgsConstructor;
 
+import java.nio.file.Path;
+
 @RequiredArgsConstructor
 public class Processor {
 
