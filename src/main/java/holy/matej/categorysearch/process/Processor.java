@@ -3,8 +3,6 @@ package holy.matej.categorysearch.process;
 import holy.matej.categorysearch.lang.Language;
 import lombok.RequiredArgsConstructor;
 
-import java.nio.file.Path;
-
 @RequiredArgsConstructor
 public class Processor {
 
@@ -16,6 +14,6 @@ public class Processor {
         var data = loader.load(lang);
 
         var categories = parser.parse(data);
-        indexer.index(categories);
+        indexer.index(categories, lang);
     }
 }

@@ -1,6 +1,7 @@
 plugins {
     id 'java'
     id 'org.jetbrains.kotlin.jvm' version '1.4.10'
+    id 'application'
 }
 
 group = 'holy.matej'
@@ -45,4 +46,12 @@ compileKotlin {
 }
 compileTestKotlin {
     kotlinOptions.jvmTarget = "1.8"
+}
+
+ext {
+    javaMainClass = "holy.matej.categorysearch.CategorySearchApplication"
+}
+
+application {
+    mainClassName = javaMainClass
 }

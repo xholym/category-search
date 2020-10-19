@@ -2,6 +2,7 @@ package holy.matej.categorysearch.search;
 
 import holy.matej.categorysearch.data.Category;
 import holy.matej.categorysearch.data.CategoryDocumentMapper;
+import holy.matej.categorysearch.lang.Language;
 import lombok.SneakyThrows;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.index.DirectoryReader;
@@ -31,12 +32,12 @@ public class Searcher {
         categoryMapper = new CategoryDocumentMapper();
     }
 
-    public List<SearchResult> search(String text) {
-        try (var reader = indexReader()) {
+    public List<SearchResult> search(String text, Language lang) {
+        try (var reader = indexReader(lang)) {
             var searcher = new IndexSearcher(reader);
 
             // TODO maybe use custom analyzer
-            var q = new QueryParser(text, new StandardAnalyzer())
+            var q = new QueryParser("category", new StandardAnalyzer())
                     .parse(text);
 
             var res = searcher.search(q, maxHits);
@@ -64,7 +65,10 @@ public class Searcher {
     }
 
     @SneakyThrows
-    private IndexReader indexReader() {
-        return DirectoryReader.open(FSDirectory.open(indexDir));
+    private IndexReader indexReader(Language lang) {
+
+        return DirectoryReader.open(
+                FSDirectory.open(indexDir.resolve(lang.name()))
+        );
     }
 }

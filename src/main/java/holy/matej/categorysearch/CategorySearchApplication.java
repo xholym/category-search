@@ -1,9 +1,12 @@
 package holy.matej.categorysearch;
 
+import holy.matej.categorysearch.lang.Language;
 import holy.matej.categorysearch.process.ProcessorFactory;
+import holy.matej.categorysearch.search.SearchResult;
 import holy.matej.categorysearch.search.Searcher;
 
 import java.nio.file.Path;
+import java.util.stream.Collectors;
 
 import static holy.matej.categorysearch.lang.Language.*;
 
@@ -26,11 +29,12 @@ public class CategorySearchApplication {
             }
             case searchCmd -> {
                 var dataDir = Path.of(args[1]);
-                var searchStr = args[2];
-                search(dataDir, searchStr);
+                var lang = Language.valueOf(args[2]);
+                var searchStr = args[3];
+                search(dataDir, searchStr, lang);
             }
             default -> throw new IllegalArgumentException(
-                    "Not recognized command "+ cmd);
+                    "Not recognized command " + cmd);
         }
 
     }
@@ -42,9 +46,15 @@ public class CategorySearchApplication {
         p.process(de);
     }
 
-    public static void search(Path dataDir, String searchText) {
+    public static void search(Path dataDir, String searchText, Language lang) {
+        System.out.println("Searching for '" + searchText + "'");
         var s = new Searcher(dataDir);
-        var results = s.search(searchText);
-        System.out.println(results);
+        var results = s.search(searchText, lang);
+        System.out.println(
+                "Found: [\n" + results.stream()
+                        .map(SearchResult::toString)
+                        .collect(Collectors.joining("\n"))
+                + "]"
+        );
     }
 }
