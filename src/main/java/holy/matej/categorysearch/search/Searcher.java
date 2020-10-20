@@ -6,6 +6,7 @@ import holy.matej.categorysearch.lang.Language;
 import lombok.SneakyThrows;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.index.DirectoryReader;
+import org.apache.lucene.index.IndexNotFoundException;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.queryparser.classic.ParseException;
 import org.apache.lucene.queryparser.classic.QueryParser;
@@ -59,6 +60,8 @@ public class Searcher {
         try {
             var doc = s.doc(d.doc);
             return categoryMapper.toCategory(doc);
+        } catch (IndexNotFoundException e) {
+            throw new IllegalStateException("Index must be created first!");
         } catch (IOException e) {
             throw new UncheckedIOException(e);
         }
