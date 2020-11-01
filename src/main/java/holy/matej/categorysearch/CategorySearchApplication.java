@@ -48,13 +48,16 @@ public class CategorySearchApplication {
 
     public static void search(Path dataDir, String searchText, Language lang) {
         System.out.println("Searching for '" + searchText + "'");
+
         var s = new Searcher(dataDir);
         var results = s.search(searchText, lang);
+
         System.out.println(
-                "Found: [\n" + results.stream()
-                        .map(SearchResult::toString)
-                        .collect(Collectors.joining("\n"))
-                + "]"
+                "Found: " + results.size()
+                        + " results [\n" + results.stream()
+                        .map(SearchResult::asString)
+                        .collect(Collectors.joining(",\n"))
+                        + "]"
         );
     }
 }

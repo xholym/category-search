@@ -1,47 +1,54 @@
 package holy.matej.categorysearch.process;
 
-import holy.matej.categorysearch.data.Article;
-import holy.matej.categorysearch.data.Category;
+import holy.matej.categorysearch.lang.Language;
+import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 
-import java.util.*;
-import java.util.function.Supplier;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.UncheckedIOException;
+import java.nio.file.Path;
+import java.util.Map;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
+@RequiredArgsConstructor
 public class Parser {
 
     public static final String pattern = "<.*\\/(.+)>"
             + " <.*>"
             + " <.*(?:Category|Kateg\\\\u00F3ria|Kategorie):(.*?)>"
             + " <(.+)>";
+    private final Path parsedDir;
 
-    public Collection<Category> parse(Stream<String> lines) {
-        return lines.parallel()
-                .filter(l -> !l.startsWith("#"))
-                .map(this::parseData)
-                .collect(
-                        (Supplier<HashMap<String, Category>>) HashMap::new,
-                        (res, cur) -> {
-                            var a = Article.of(
-                                    cur.get("article"), cur.get("articleLink")
-                            );
+    public void parse(Stream<String> lines, Language lang) {
+        var target = parsedDir.resolve(lang.name()).toFile();
 
-                            var name = cur.get("name");
+        try (var f = new FileWriter(target)) {
 
-                            if (res.containsKey(name)) {
-                                res.get(name).addArticle(a);
-                            }
-                            else {
-                                var cat = Category.of(
-                                        name,
-                                        new ArrayList<>(List.of(a))
-                                );
-                                res.put(name, cat);
-                            }
-                        },
-                        (m1, m2) -> m2.forEach(m1::putIfAbsent)
-                )
-                .values();
+            lines.forEach(l -> {
+                        if (l.startsWith("#"))
+                            return;
+                        var data = parseData(l);
+
+                        writeData(f, data);
+                    }
+            );
+
+        } catch (IOException e) {
+            throw new UncheckedIOException(e);
+        }
+
+    }
+
+    @SneakyThrows
+    private void writeData(FileWriter f, Map<String, String> data) {
+        f.append(data.get("name"))
+                .append(";")
+                .append(data.get("article"))
+                .append(";")
+                .append(data.get("articleLink"))
+                .append("\n");
     }
 
     private Map<String, String> parseData(String line) {

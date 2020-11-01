@@ -23,4 +23,5 @@ out/
 !**/src/test/**/out/
 
 /data/index
+/data/parsed
 

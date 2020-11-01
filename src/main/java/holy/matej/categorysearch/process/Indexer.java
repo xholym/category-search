@@ -1,7 +1,7 @@
 package holy.matej.categorysearch.process;
 
-import holy.matej.categorysearch.data.Category;
-import holy.matej.categorysearch.data.CategoryDocumentMapper;
+import holy.matej.categorysearch.data.ParsedCategory;
+import holy.matej.categorysearch.search.CategoryDocumentMapper;
 import holy.matej.categorysearch.lang.Language;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.index.IndexWriter;
@@ -11,28 +11,30 @@ import org.apache.lucene.store.FSDirectory;
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.nio.file.Path;
-import java.util.Collection;
-
-import static java.util.stream.Collectors.toList;
+import java.util.stream.Stream;
 
 public class Indexer {
 
     private final Path indexDir;
     private final CategoryDocumentMapper categoryMapper;
 
-    public Indexer(Path dataDir) {
-        indexDir = dataDir.resolve("index");
+    public Indexer(Path indexDir) {
+        this.indexDir = indexDir;
         categoryMapper = new CategoryDocumentMapper();
     }
 
-    public void index(Collection<Category> categories, Language lang) {
+    public void index(Stream<ParsedCategory> categories, Language lang) {
         try (var index = indexWriter(lang)) {
 
-            var docs = categories.stream()
-                    .map(categoryMapper::toDoc)
-                    .collect(toList());
-
-            index.addDocuments(docs);
+            categories.parallel()
+                    .forEach(c -> {
+                        var doc = categoryMapper.toDoc(c);
+                        try {
+                            index.addDocument(doc);
+                        } catch (IOException e) {
+                            throw new UncheckedIOException(e); // fuj
+                        }
+                    });
 
         } catch (IOException e) {
             throw new UncheckedIOException(e);
