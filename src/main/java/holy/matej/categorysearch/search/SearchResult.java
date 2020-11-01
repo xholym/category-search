@@ -1,7 +1,6 @@
 package holy.matej.categorysearch.search;
 
 import holy.matej.categorysearch.data.Article;
-import holy.matej.categorysearch.data.ParsedCategory;
 import lombok.NonNull;
 import lombok.Value;
 

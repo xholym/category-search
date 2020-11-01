@@ -24,7 +24,7 @@ import static java.util.Arrays.stream;
 
 public class Searcher {
 
-    public static final int maxHits = 5;
+    public static final int maxHits = 1000;
     private final Path indexDir;
     private final CategoryDocumentMapper categoryMapper;
 

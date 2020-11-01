@@ -21,8 +21,11 @@ public class Processor {
     public void process(Language lang) {
         var data = loader.load(lang);
 
+        System.out.println("Parsing data (" + lang + ")...");
         parser.parse(data, lang);
+        System.out.println("Reading data (" + lang + ")...");
         var categories = read(lang);
+        System.out.println("Indexing data (" + lang + ")...");
         indexer.index(categories, lang);
     }
 
@@ -31,9 +34,10 @@ public class Processor {
         return Files.lines(parsedDir.resolve(lang.name()))
                 .map(l -> {
                             var parts = l.split(";");
-                            if (parts.length != 3) {
+                            if (parts.length < 3) {
                                 throw new RuntimeException("ERROR: line " + l
-                                        + " does not contain all required values");
+                                        + " does not contain all required values, "
+                                + "actual size is" + parts.length);
                             }
 
                             return ParsedCategory.of(

@@ -4,8 +4,13 @@ import holy.matej.categorysearch.lang.Language;
 import holy.matej.categorysearch.process.ProcessorFactory;
 import holy.matej.categorysearch.search.SearchResult;
 import holy.matej.categorysearch.search.Searcher;
+import lombok.SneakyThrows;
 
+import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 import java.util.stream.Collectors;
 
 import static holy.matej.categorysearch.lang.Language.*;
@@ -50,14 +55,19 @@ public class CategorySearchApplication {
         System.out.println("Searching for '" + searchText + "'");
 
         var s = new Searcher(dataDir);
-        var results = s.search(searchText, lang);
+        var res = s.search(searchText, lang);
 
-        System.out.println(
-                "Found: " + results.size()
-                        + " results [\n" + results.stream()
-                        .map(SearchResult::asString)
-                        .collect(Collectors.joining(",\n"))
-                        + "]"
-        );
+        saveResult(res);
+    }
+
+    @SneakyThrows
+    private static void saveResult(Collection<SearchResult> res) {
+        var f = Path.of("./result");
+        var all = new ArrayList<>(res);
+        Files.writeString(f, "Found: " + res.size()
+                + " results [\n" + all.stream()
+                .map(r -> all.indexOf(r) + " -> " + r.asString())
+                .collect(Collectors.joining(",\n"))
+                + "]");
     }
 }
