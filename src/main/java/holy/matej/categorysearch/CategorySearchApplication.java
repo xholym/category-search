@@ -57,6 +57,7 @@ public class CategorySearchApplication {
         var s = new Searcher(dataDir);
         var res = s.search(searchText, lang);
 
+        System.out.println("Found: " + res.size() + " results");
         saveResult(res);
     }
 

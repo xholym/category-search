@@ -22,9 +22,12 @@ public class Parser {
     private final Path parsedDir;
 
     public void parse(Stream<String> lines, Language lang) {
-        var target = parsedDir.resolve(lang.name()).toFile();
+        var target = parsedDir.resolve(lang.name() + ".csv").toFile();
 
         try (var f = new FileWriter(target)) {
+
+            // header
+            f.append("category;article;article link\n");
 
             lines.forEach(l -> {
                         if (l.startsWith("#"))

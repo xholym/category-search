@@ -31,7 +31,7 @@ public class Processor {
 
     @SneakyThrows
     private Stream<ParsedCategory> read(Language lang) {
-        return Files.lines(parsedDir.resolve(lang.name()))
+        return Files.lines(parsedDir.resolve(lang.name() + ".csv"))
                 .map(l -> {
                             var parts = l.split(";");
                             if (parts.length < 3) {
