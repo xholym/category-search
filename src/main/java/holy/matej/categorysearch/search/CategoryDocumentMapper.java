@@ -3,6 +3,7 @@ package holy.matej.categorysearch.search;
 import holy.matej.categorysearch.data.Article;
 import holy.matej.categorysearch.data.ParsedCategory;
 import holy.matej.categorysearch.search.SearchResult.CategoryResult;
+import org.apache.commons.text.StringEscapeUtils;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
 import org.apache.lucene.document.StringField;
@@ -23,11 +24,15 @@ public class CategoryDocumentMapper {
 
     public CategoryResult toCategory(Document doc) {
         return CategoryResult.of(
-                doc.get("name"),
+                encode(doc.get("name")),
                 Article.of(
-                        doc.get("article"),
-                        doc.get("articleLink")
+                        encode(doc.get("article")),
+                        encode(doc.get("articleLink"))
                 )
         );
+    }
+
+    private String encode(String s) {
+        return StringEscapeUtils.unescapeJava(s);
     }
 }

@@ -12,19 +12,21 @@ import java.util.Map;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
+
 @RequiredArgsConstructor
 public class Parser {
 
-    public static final String pattern = "<.*\\/(.+)>"
+    public static final Pattern pattern = Pattern.compile("<.*\\/(.+)>"
             + " <.*>"
             + " <.*(?:Category|Kateg\\\\u00F3ria|Kategorie):(.*?)>"
-            + " <(.+)>";
+            + " <(.+)>");
     private final Path parsedDir;
 
     public void parse(Stream<String> lines, Language lang) {
         var target = parsedDir.resolve(lang.name() + ".csv").toFile();
 
-        try (var f = new FileWriter(target)) {
+        try (var f = new FileWriter(target, UTF_8)) {
 
             // header
             f.append("category;article;article link\n");
@@ -55,7 +57,7 @@ public class Parser {
     }
 
     private Map<String, String> parseData(String line) {
-        var regex = Pattern.compile(pattern).matcher(line);
+        var regex = pattern.matcher(line);
 
         if (!regex.find())
             throw new IllegalStateException("Cannot match pattern");

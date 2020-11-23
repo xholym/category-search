@@ -28,6 +28,8 @@ dependencies {
     implementation 'org.apache.lucene:lucene-core:8.6.3'
     implementation 'org.apache.lucene:lucene-queryparser:8.6.3'
 
+    // To solve encoding problems with dataset
+    implementation 'org.apache.commons:commons-text:1.9'
 
     implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk8'
     implementation 'org.jetbrains.kotlin:kotlin-stdlib'
@@ -35,6 +37,7 @@ dependencies {
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.0'
     testImplementation 'org.junit.jupiter:junit-jupiter-engine:5.7.0'
     testImplementation 'com.nhaarman:mockito-kotlin:1.6.0'
+
 }
 
 test {

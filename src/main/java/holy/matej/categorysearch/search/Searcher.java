@@ -16,11 +16,15 @@ import org.apache.lucene.store.FSDirectory;
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.nio.file.Path;
-import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static java.util.Arrays.stream;
+import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.toSet;
 
 public class Searcher {
 
@@ -33,7 +37,7 @@ public class Searcher {
         categoryMapper = new CategoryDocumentMapper();
     }
 
-    public Collection<SearchResult> search(String text, Language lang) {
+    public List<SearchResult> search(String text, Language lang) {
         try (var reader = indexReader(lang)) {
             var searcher = new IndexSearcher(reader);
 
@@ -46,7 +50,8 @@ public class Searcher {
             var results = stream(res.scoreDocs)
                     .map(d -> SearchResult.of(
                             d.score, findCategory(searcher, d)
-                    ));
+                    ))
+                    .collect(toSet());
 
             return mergeSameCategories(results);
 
@@ -57,22 +62,23 @@ public class Searcher {
         }
     }
 
-    private Collection<SearchResult> mergeSameCategories(Stream<SearchResult> found) {
+    private List<SearchResult> mergeSameCategories(Set<SearchResult> found) {
         var res = new HashMap<String, SearchResult>();
 
-        found.forEach(it -> {
-                var c = it.getCategory();
-                var name = c.getName();
+        for (var it : found) {
+            var c = it.getCategory();
+            var name = c.getName();
 
-                if (res.containsKey(name)) {
-                    var previous = res.get(name).getCategory();
-                    previous.addArticles(c.getArticles());
-                } else {
-                    res.put(name, it);
-                }
+            if (res.containsKey(name)) {
+                var previous = res.get(name).getCategory();
+                previous.addArticles(c.getArticles());
+            } else {
+                res.put(name, it);
             }
-        );
-        return res.values();
+        }
+        return res.values().stream()
+                .sorted((a, b) -> Float.compare(b.getScore(), a.getScore()))
+                .collect(toList());
     }
 
     private CategoryResult findCategory(IndexSearcher s, ScoreDoc d) {

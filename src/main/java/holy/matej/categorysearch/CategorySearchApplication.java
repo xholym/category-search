@@ -6,14 +6,15 @@ import holy.matej.categorysearch.search.SearchResult;
 import holy.matej.categorysearch.search.Searcher;
 import lombok.SneakyThrows;
 
+import java.io.PrintStream;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import static holy.matej.categorysearch.lang.Language.*;
+import static java.nio.charset.StandardCharsets.UTF_8;
 
 public class CategorySearchApplication {
 
@@ -25,15 +26,16 @@ public class CategorySearchApplication {
 
         if (args.length < 1)
             throw new IllegalArgumentException("No arguments entered");
+        var dataDir = Path.of(args[1]);
+        if (!dataDir.toFile().exists())
+            throw new IllegalArgumentException("Entered file does not exist");
 
         var cmd = args[0];
         switch (cmd) {
             case indexCmd -> {
-                var dataDir = Path.of(args[1]);
                 index(dataDir);
             }
             case searchCmd -> {
-                var dataDir = Path.of(args[1]);
                 var lang = Language.valueOf(args[2]);
                 var searchStr = args[3];
                 search(dataDir, searchStr, lang);
@@ -58,17 +60,34 @@ public class CategorySearchApplication {
         var res = s.search(searchText, lang);
 
         System.out.println("Found: " + res.size() + " results");
+        var ntop = 5;
+        printTopResults(res, ntop);
         saveResult(res);
     }
 
+    private static void printTopResults(List<SearchResult> res, int ntop) {
+        var end = res.size() > ntop ? ntop : res.size();
+        var top = res.subList(0, end);
+        var ps = new PrintStream(System.out, true, UTF_8);
+
+
+        ps.println("Top " + end + " results");
+        for (var r : top) {
+            ps.println(res.indexOf(r) + " -> " + r.asString());
+        }
+    }
+
     @SneakyThrows
-    private static void saveResult(Collection<SearchResult> res) {
+    private static void saveResult(List<SearchResult> res) {
         var f = Path.of("./result");
-        var all = new ArrayList<>(res);
-        Files.writeString(f, "Found: " + res.size()
-                + " results [\n" + all.stream()
-                .map(r -> all.indexOf(r) + " -> " + r.asString())
-                .collect(Collectors.joining(",\n"))
-                + "]");
+        Files.writeString(
+                f,
+                "Found: " + res.size()
+                        + " results [\n" + res.stream()
+                        .map(r -> res.indexOf(r) + " -> " + r.asString())
+                        .collect(Collectors.joining(",\n"))
+                        + "]"
+
+        );
     }
 }
