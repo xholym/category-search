@@ -1,13 +1,12 @@
 package holy.matej.categorysearch;
 
 import holy.matej.categorysearch.lang.Language;
-import holy.matej.categorysearch.process.ProcessorFactory;
+import holy.matej.categorysearch.process.Processor;
 import holy.matej.categorysearch.search.SearchResult;
 import holy.matej.categorysearch.search.Searcher;
 import lombok.SneakyThrows;
 
 import java.io.PrintStream;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
@@ -47,7 +46,7 @@ public class CategorySearchApplication {
     }
 
     public static void index(Path dataDir) {
-        var p = ProcessorFactory.create(dataDir);
+        var p = new Processor(dataDir);
         p.process(en);
         p.process(sk);
         p.process(de);
@@ -66,7 +65,7 @@ public class CategorySearchApplication {
     }
 
     private static void printTopResults(List<SearchResult> res, int ntop) {
-        var end = res.size() > ntop ? ntop : res.size();
+        var end = Math.min(res.size(), ntop);
         var top = res.subList(0, end);
         var ps = new PrintStream(System.out, true, UTF_8);
 

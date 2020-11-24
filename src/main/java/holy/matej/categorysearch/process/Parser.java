@@ -1,18 +1,13 @@
 package holy.matej.categorysearch.process;
 
-import holy.matej.categorysearch.lang.Language;
+import holy.matej.categorysearch.data.Article;
+import holy.matej.categorysearch.data.Category;
 import lombok.RequiredArgsConstructor;
-import lombok.SneakyThrows;
 
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.UncheckedIOException;
-import java.nio.file.Path;
+import java.util.Comparator;
 import java.util.Map;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
-
-import static java.nio.charset.StandardCharsets.UTF_8;
 
 @RequiredArgsConstructor
 public class Parser {
@@ -21,39 +16,37 @@ public class Parser {
             + " <.*>"
             + " <.*(?:Category|Kateg\\\\u00F3ria|Kategorie):(.*?)>"
             + " <(.+)>");
-    private final Path parsedDir;
 
-    public void parse(Stream<String> lines, Language lang) {
-        var target = parsedDir.resolve(lang.name() + ".csv").toFile();
+    public Stream<Category> parse(Stream<String> lines) {
 
-        try (var f = new FileWriter(target, UTF_8)) {
+            var data = lines.filter(l -> !l.startsWith("#"))
+                    .map(this::parseData)
+                    .sorted(Comparator.comparing(a -> a.get("category")))
+                    .iterator();
 
-            // header
-            f.append("category;article;article link\n");
 
-            lines.forEach(l -> {
-                        if (l.startsWith("#"))
-                            return;
-                        var data = parseData(l);
+            Category cat = null;
+            Map<String, String> walk;
+            Stream.Builder<Category> res = Stream.builder();
 
-                        writeData(f, data);
-                    }
-            );
+            while (data.hasNext()) {
+                walk = data.next();
+                var name = walk.get("category");
+                var article = Article.of(walk.get("article"), walk.get("articleLink"));
 
-        } catch (IOException e) {
-            throw new UncheckedIOException(e);
-        }
+                if (cat == null) {
+                    cat = Category.of(name, article);
+                } else if (name.equals(cat.getName())) {
+                    cat.addArticle(article);
+                } else {
+                    res.accept(cat);
+                    cat = Category.of(name, article);
+                }
+            }
+            if (cat != null)
+                res.accept(cat);
 
-    }
-
-    @SneakyThrows
-    private void writeData(FileWriter f, Map<String, String> data) {
-        f.append(data.get("name"))
-                .append(";")
-                .append(data.get("article"))
-                .append(";")
-                .append(data.get("articleLink"))
-                .append("\n");
+            return res.build();
     }
 
     private Map<String, String> parseData(String line) {
@@ -64,7 +57,7 @@ public class Parser {
 
         return Map.of(
                 "article", regex.group(1).replace("_", " "),
-                "name", regex.group(2).replace("_", " "),
+                "category", regex.group(2).replace("_", " "),
                 "articleLink", regex.group(3)
         );
     }

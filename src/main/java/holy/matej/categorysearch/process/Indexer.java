@@ -1,9 +1,11 @@
 package holy.matej.categorysearch.process;
 
-import holy.matej.categorysearch.data.ParsedCategory;
-import holy.matej.categorysearch.search.CategoryDocumentMapper;
+import holy.matej.categorysearch.data.Category;
 import holy.matej.categorysearch.lang.Language;
+import holy.matej.categorysearch.search.CategoryDocumentManager;
+import lombok.SneakyThrows;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
+import org.apache.lucene.document.Document;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.IndexWriterConfig;
 import org.apache.lucene.store.FSDirectory;
@@ -16,24 +18,20 @@ import java.util.stream.Stream;
 public class Indexer {
 
     private final Path indexDir;
-    private final CategoryDocumentMapper categoryMapper;
+    private final CategoryDocumentManager categoryMapper;
 
     public Indexer(Path indexDir) {
         this.indexDir = indexDir;
-        categoryMapper = new CategoryDocumentMapper();
+        categoryMapper = new CategoryDocumentManager();
     }
 
-    public void index(Stream<ParsedCategory> categories, Language lang) {
+    public void index(Stream<Category> categories, Language lang) {
         try (var index = indexWriter(lang)) {
 
             categories.parallel()
                     .forEach(c -> {
                         var doc = categoryMapper.toDoc(c);
-                        try {
-                            index.addDocument(doc);
-                        } catch (IOException e) {
-                            throw new UncheckedIOException(e); // fuj
-                        }
+                        addToIndex(index, doc);
                     });
 
         } catch (IOException e) {
@@ -41,12 +39,16 @@ public class Indexer {
         }
     }
 
+    @SneakyThrows
+    private void addToIndex(IndexWriter index, Document doc) {
+        index.addDocument(doc);
+    }
+
     private IndexWriter indexWriter(Language lang) {
         try {
             var dir = FSDirectory.open(indexDir.resolve(lang.name()));
             var cfg = new IndexWriterConfig(new StandardAnalyzer());
 
-            // TODO change index config
             return new IndexWriter(dir, cfg);
 
         } catch (IOException e) {

@@ -1,50 +1,55 @@
 package holy.matej.categorysearch.process;
 
-import holy.matej.categorysearch.data.Article;
-import holy.matej.categorysearch.data.ParsedCategory;
 import holy.matej.categorysearch.lang.Language;
+import holy.matej.categorysearch.process.io.CategoryReader;
+import holy.matej.categorysearch.process.io.CategoryWriter;
 import lombok.RequiredArgsConstructor;
-import lombok.SneakyThrows;
 
-import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.stream.Stream;
 
 @RequiredArgsConstructor
 public class Processor {
 
-    private final Path parsedDir;
     private final DataLoader loader;
     private final Parser parser;
+    private final CategoryWriter categoryWriter;
+    private final CategoryReader categoryReader;
     private final Indexer indexer;
+
+    public Processor(Path dataDir) {
+        var parsedDir = dataDir.resolve("parsed");
+
+        var dir = parsedDir.toFile();
+        if (!dir.exists())
+            dir.mkdir();
+
+        var indexDir = dataDir.resolve("index");
+        dir = indexDir.toFile();
+        if (dir.exists())
+            dir.delete();
+
+        this.loader = new DataLoader(dataDir);
+        this.parser = new Parser();
+        this.categoryWriter = new CategoryWriter(parsedDir);
+        this.categoryReader = new CategoryReader(parsedDir);
+        this.indexer = new Indexer(indexDir);
+    }
+
 
     public void process(Language lang) {
         var data = loader.load(lang);
 
-        System.out.println("Parsing data (" + lang + ")...");
-        parser.parse(data, lang);
-        System.out.println("Reading data (" + lang + ")...");
-        var categories = read(lang);
-        System.out.println("Indexing data (" + lang + ")...");
+        System.out.println("Parsing data to categories (" + lang + ")...");
+        var categories = parser.parse(data);
+
+        System.out.println("Writing categories (" + lang + ")...");
+        categoryWriter.write(categories, lang);
+
+        System.out.println("Reading categories (" + lang + ")...");
+        categories = categoryReader.read(lang);
+
+        System.out.println("Indexing (" + lang + ")...");
         indexer.index(categories, lang);
     }
 
-    @SneakyThrows
-    private Stream<ParsedCategory> read(Language lang) {
-        return Files.lines(parsedDir.resolve(lang.name() + ".csv"))
-                .map(l -> {
-                            var parts = l.split(";");
-                            if (parts.length < 3) {
-                                throw new RuntimeException("ERROR: line " + l
-                                        + " does not contain all required values, "
-                                + "actual size is" + parts.length);
-                            }
-
-                            return ParsedCategory.of(
-                                    parts[0],
-                                    Article.of(parts[1], parts[2])
-                            );
-                        }
-                );
-    }
 }

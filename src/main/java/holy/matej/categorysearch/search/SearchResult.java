@@ -1,6 +1,7 @@
 package holy.matej.categorysearch.search;
 
 import holy.matej.categorysearch.data.Article;
+import holy.matej.categorysearch.data.Category;
 import lombok.NonNull;
 import lombok.Value;
 
@@ -14,7 +15,7 @@ public class SearchResult {
     float score;
 
     @NonNull
-    CategoryResult category;
+    Category category;
 
     public String asString() {
         var res = "{\n"
@@ -24,8 +25,7 @@ public class SearchResult {
                 + "    articles: [ \n";
         var articles = category.getArticles().stream()
                 .map(a ->
-                        "      { name: " + a.getName()
-                                + ", link: " + a.getLink() + " }"
+                        "      \"" + a.getName() + "\""
                 )
                 .collect(Collectors.joining(", \n"));
 
