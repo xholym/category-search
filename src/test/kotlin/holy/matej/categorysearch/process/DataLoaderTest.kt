@@ -31,7 +31,7 @@ class DataLoaderTest {
         assertFirst(records,
                 "<http://sk.dbpedia.org/resource/Isaac_Newton>" +
                         " <http://purl.org/dc/terms/subject>" +
-                        " <http://sk.dbpedia.org/resource/Kateg\u00F3ria:Narodenia_v_1643>" +
+                        " <http://sk.dbpedia.org/resource/Kateg\\u00F3ria:Narodenia_v_1643>" +
                         " <http://sk.wikipedia.org/wiki/Isaac_Newton?oldid=5417081#section=Zdroje&relative-line=6&absolute-line=64> ."
         )
     }
