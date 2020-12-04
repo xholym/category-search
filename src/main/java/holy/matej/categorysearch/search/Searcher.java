@@ -7,6 +7,7 @@ import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.index.DirectoryReader;
 import org.apache.lucene.index.IndexNotFoundException;
 import org.apache.lucene.index.IndexReader;
+import org.apache.lucene.queryparser.classic.MultiFieldQueryParser;
 import org.apache.lucene.queryparser.classic.ParseException;
 import org.apache.lucene.queryparser.classic.QueryParser;
 import org.apache.lucene.search.IndexSearcher;
@@ -26,19 +27,22 @@ public class Searcher {
 
     public static final int maxHits = 1000;
     private final Path indexDir;
-    private final CategoryDocumentManager categoryMapper;
+    private final CategoryDocumentMapper categoryMapper;
 
     public Searcher(Path dataDir) {
         this.indexDir = dataDir.resolve("index");
-        categoryMapper = new CategoryDocumentManager();
+        categoryMapper = new CategoryDocumentMapper();
     }
 
-    public List<SearchResult> search(String text, Language lang) {
+    public List<SearchResult> search(SearchRequest req, Language lang) {
         try (var reader = indexReader(lang)) {
             var searcher = new IndexSearcher(reader);
 
-            var q = new QueryParser("category", new StandardAnalyzer())
-                    .parse(text);
+            var q = MultiFieldQueryParser.parse(
+                    req.fields(),
+                    req.searches(),
+                    new StandardAnalyzer()
+            );
 
             var res = searcher.search(q, maxHits);
 
@@ -53,7 +57,7 @@ public class Searcher {
                     .collect(toList());
 
         } catch (ParseException e) {
-            throw new IllegalStateException("Cannnot parse " + text);
+            throw new IllegalStateException("Cannnot parse " + req);
         } catch (IOException e) {
             throw new UncheckedIOException(e);
         }

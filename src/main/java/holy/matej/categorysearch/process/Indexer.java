@@ -2,7 +2,7 @@ package holy.matej.categorysearch.process;
 
 import holy.matej.categorysearch.data.Category;
 import holy.matej.categorysearch.lang.Language;
-import holy.matej.categorysearch.search.CategoryDocumentManager;
+import holy.matej.categorysearch.search.CategoryDocumentMapper;
 import lombok.SneakyThrows;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.document.Document;
@@ -18,11 +18,11 @@ import java.util.stream.Stream;
 public class Indexer {
 
     private final Path indexDir;
-    private final CategoryDocumentManager categoryMapper;
+    private final CategoryDocumentMapper categoryMapper;
 
     public Indexer(Path indexDir) {
         this.indexDir = indexDir;
-        categoryMapper = new CategoryDocumentManager();
+        categoryMapper = new CategoryDocumentMapper();
     }
 
     public void index(Stream<Category> categories, Language lang) {

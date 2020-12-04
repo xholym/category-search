@@ -2,6 +2,7 @@ package holy.matej.categorysearch;
 
 import holy.matej.categorysearch.lang.Language;
 import holy.matej.categorysearch.process.Processor;
+import holy.matej.categorysearch.search.SearchRequest;
 import holy.matej.categorysearch.search.SearchResult;
 import holy.matej.categorysearch.search.Searcher;
 import lombok.SneakyThrows;
@@ -36,8 +37,8 @@ public class CategorySearchApplication {
             }
             case searchCmd -> {
                 var lang = Language.valueOf(args[2]);
-                var searchStr = args[3];
-                search(dataDir, searchStr, lang);
+                var searchReq = parseSearchRequest(args);
+                search(dataDir, searchReq, lang);
             }
             default -> throw new IllegalArgumentException(
                     "Not recognized command " + cmd);
@@ -52,11 +53,11 @@ public class CategorySearchApplication {
         p.process(de);
     }
 
-    public static void search(Path dataDir, String searchText, Language lang) {
-        System.out.println("Searching for '" + searchText + "'");
+    public static void search(Path dataDir, SearchRequest searchReq, Language lang) {
+        System.out.println("Searching for '" + searchReq + "'");
 
         var s = new Searcher(dataDir);
-        var res = s.search(searchText, lang);
+        var res = s.search(searchReq, lang);
 
         System.out.println("Found: " + res.size() + " results");
         var ntop = 5;
@@ -64,11 +65,36 @@ public class CategorySearchApplication {
         saveResult(res);
     }
 
+    private static SearchRequest parseSearchRequest(String []args) {
+        if (!args[3].startsWith("-") && args.length == 4)
+            return new SearchRequest(args[3], null);
+
+        String category = null;
+        String article = null;
+        for (int i = 3; i < args.length; i++) {
+            switch (args[i]) {
+                case "-c", "--category" -> {
+                    if (i + 1 >= args.length)
+                        throw new IllegalArgumentException("missing value after " + args[i] + " argument");
+                    category = args[i + 1];
+                    i++;
+                }
+                case "-a", "--article" -> {
+                    if (i + 1 >= args.length)
+                        throw new IllegalArgumentException("missing value after " + args[i] + " argument");
+                    article = args[i + 1];
+                    i++;
+                }
+                default -> throw new IllegalArgumentException("wrong argument " + args[i]);
+            }
+        }
+        return new SearchRequest(category, article);
+    }
+
     private static void printTopResults(List<SearchResult> res, int ntop) {
         var end = Math.min(res.size(), ntop);
         var top = res.subList(0, end);
         var ps = new PrintStream(System.out, true, UTF_8);
-
 
         ps.println("Top " + end + " results");
         for (var r : top) {

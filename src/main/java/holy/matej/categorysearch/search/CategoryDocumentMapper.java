@@ -8,14 +8,17 @@ import org.apache.lucene.document.Field;
 import org.apache.lucene.document.StringField;
 import org.apache.lucene.document.TextField;
 
-import java.util.Set;
+import static java.util.stream.Collectors.joining;
 
-public class CategoryDocumentManager {
+public class CategoryDocumentMapper {
+
+    public static final String CATEGORY_FIELD = "category";
+    public static final String ARTICLES_FIELD = "articles";
 
     public Document toDoc(Category cat) {
         var res = new Document();
 
-        res.add(new TextField("category", cat.getName(), Field.Store.NO));
+        res.add(new TextField(CATEGORY_FIELD, cat.getName(), Field.Store.NO));
         res.add(new StringField("name", cat.getName(), Field.Store.YES));
 
         var articles = cat.getArticles();
@@ -23,6 +26,13 @@ public class CategoryDocumentManager {
             res.add(new StringField("articleName" + i, articles.get(i).getName(), Field.Store.YES));
             res.add(new StringField("articleLink" + i, articles.get(i).getLink(), Field.Store.YES));
         }
+        res.add(
+                new TextField(
+                        ARTICLES_FIELD,
+                        cat.getArticles().stream().map(Article::getName).collect(joining(", ")),
+                        Field.Store.NO
+                )
+        );
 
         return res;
     }
