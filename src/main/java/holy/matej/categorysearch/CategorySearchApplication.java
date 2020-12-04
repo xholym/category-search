@@ -36,7 +36,12 @@ public class CategorySearchApplication {
                 index(dataDir);
             }
             case searchCmd -> {
-                var lang = Language.valueOf(args[2]);
+                Language lang;
+                try {
+                    lang = Language.valueOf(args[2]);
+                } catch (IllegalArgumentException e) {
+                    throw new IllegalArgumentException("Argument " + args[2] + " is not a language!", e);
+                }
                 var searchReq = parseSearchRequest(args);
                 search(dataDir, searchReq, lang);
             }

@@ -21,13 +21,13 @@ public class SearchResult {
         var res = "{\n"
                 + "  score: " + score + ", \n"
                 + "  category: { \n"
-                + "    name: " + category.getName() + ",\n"
-                + "    articles: [ \n";
+                + "    name: \"" + category.getName() + "\",\n"
+                + "    articles: [ \n      ";
         var articles = category.getArticles().stream()
                 .map(a ->
-                        "      \"" + a.getName() + "\""
+                        "\"" + a.getName() + "\""
                 )
-                .collect(Collectors.joining(", \n"));
+                .collect(Collectors.joining(", "));
 
         return res + articles
                 + "\n    ]\n"

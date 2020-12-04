@@ -9,7 +9,6 @@ import org.apache.lucene.index.IndexNotFoundException;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.queryparser.classic.MultiFieldQueryParser;
 import org.apache.lucene.queryparser.classic.ParseException;
-import org.apache.lucene.queryparser.classic.QueryParser;
 import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.ScoreDoc;
 import org.apache.lucene.store.FSDirectory;
@@ -18,14 +17,17 @@ import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.nio.file.Path;
 import java.util.List;
+import java.util.Map;
 
+import static holy.matej.categorysearch.search.CategoryDocumentMapper.CATEGORY_FIELD;
 import static java.util.Arrays.stream;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toSet;
 
 public class Searcher {
 
-    public static final int maxHits = 1000;
+    public static final int MAX_HITS = 1000;
+    public static final float CATEGORY_BOOST = 1.5f;
     private final Path indexDir;
     private final CategoryDocumentMapper categoryMapper;
 
@@ -38,13 +40,13 @@ public class Searcher {
         try (var reader = indexReader(lang)) {
             var searcher = new IndexSearcher(reader);
 
-            var q = MultiFieldQueryParser.parse(
+            var q = new MultiFieldQueryParser(
                     req.fields(),
-                    req.searches(),
-                    new StandardAnalyzer()
-            );
+                    new StandardAnalyzer(),
+                    Map.of(CATEGORY_FIELD, CATEGORY_BOOST)
+            ).parse(req.queryStr());
 
-            var res = searcher.search(q, maxHits);
+            var res = searcher.search(q, MAX_HITS);
 
             return stream(res.scoreDocs)
                     .map(d -> SearchResult.of(

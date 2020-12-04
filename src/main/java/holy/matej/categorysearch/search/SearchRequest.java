@@ -28,4 +28,15 @@ public class SearchRequest {
                 .filter(Objects::nonNull)
                 .toArray(String[]::new);
     }
+
+    public String queryStr() {
+        var s = new StringBuilder();
+        if (category != null) {
+            s.append("(" + CATEGORY_FIELD + ":" + category + ") ");
+        }
+        if (article != null)
+            s.append("(" + ARTICLES_FIELD + ":" + article + ")");
+
+        return s.toString();
+    }
 }
