@@ -1,8 +1,19 @@
+buildscript {
+    repositories {
+        jcenter()
+    }
+    dependencies {
+        classpath 'com.github.jengelman.gradle.plugins:shadow:2.0.1'
+    }
+}
+
 plugins {
     id 'java'
     id 'org.jetbrains.kotlin.jvm' version '1.4.10'
     id 'application'
+    id 'com.github.johnrengelman.shadow' version "6.1.0"
 }
+
 
 group = 'holy.matej'
 version = '0.0.1'
@@ -57,4 +68,13 @@ ext {
 
 application {
     mainClassName = javaMainClass
+}
+
+project.setProperty("mainClassName", javaMainClass)
+jar {
+    manifest {
+        attributes(
+            'Main-Class': javaMainClass
+        )
+    }
 }
