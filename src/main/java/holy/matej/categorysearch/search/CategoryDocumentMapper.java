@@ -38,11 +38,11 @@ public class CategoryDocumentMapper {
     }
 
     public Category toCategory(Document doc) {
-        var cat = Category.empty(encode(doc.get("name")));
+        var cat = Category.empty(doc.get("name"));
         int i = 0;
         while (true) {
-            var name = encode(doc.get("articleName" + i));
-            var link = encode(doc.get("articleLink" + i));
+            var name = doc.get("articleName" + i);
+            var link = doc.get("articleLink" + i);
             if (name == null) {
                 break;
             }
@@ -52,7 +52,4 @@ public class CategoryDocumentMapper {
         return cat;
     }
 
-    private String encode(String s) {
-        return StringEscapeUtils.unescapeJava(s);
-    }
 }

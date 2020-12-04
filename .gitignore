@@ -25,5 +25,6 @@ out/
 /bigdata
 /data/index
 /data/parsed
-result
+result.txt
+stats.txt
 

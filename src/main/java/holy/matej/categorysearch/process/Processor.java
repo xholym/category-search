@@ -20,8 +20,9 @@ public class Processor {
         var parsedDir = dataDir.resolve("parsed");
 
         var dir = parsedDir.toFile();
-        if (!dir.exists())
-            dir.mkdir();
+        if (dir.exists())
+            dir.delete();
+        dir.mkdir();
 
         var indexDir = dataDir.resolve("index");
         dir = indexDir.toFile();
