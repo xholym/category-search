@@ -7,10 +7,10 @@ import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.index.DirectoryReader;
 import org.apache.lucene.index.IndexNotFoundException;
 import org.apache.lucene.index.IndexReader;
+import org.apache.lucene.index.Term;
 import org.apache.lucene.queryparser.classic.MultiFieldQueryParser;
 import org.apache.lucene.queryparser.classic.ParseException;
-import org.apache.lucene.search.IndexSearcher;
-import org.apache.lucene.search.ScoreDoc;
+import org.apache.lucene.search.*;
 import org.apache.lucene.store.FSDirectory;
 
 import java.io.IOException;
@@ -19,6 +19,7 @@ import java.nio.file.Path;
 import java.util.List;
 import java.util.Map;
 
+import static holy.matej.categorysearch.search.CategoryDocumentMapper.ARTICLES_FIELD;
 import static holy.matej.categorysearch.search.CategoryDocumentMapper.CATEGORY_FIELD;
 import static java.util.Arrays.stream;
 import static java.util.stream.Collectors.toList;
@@ -27,7 +28,7 @@ import static java.util.stream.Collectors.toSet;
 public class Searcher {
 
     public static final int MAX_HITS = 1000;
-    public static final float CATEGORY_BOOST = 1.5f;
+    public static final float CATEGORY_BOOST = 2.0f;
     private final Path indexDir;
     private final CategoryDocumentMapper categoryMapper;
 
@@ -40,11 +41,12 @@ public class Searcher {
         try (var reader = indexReader(lang)) {
             var searcher = new IndexSearcher(reader);
 
-            var q = new MultiFieldQueryParser(
-                    req.fields(),
-                    new StandardAnalyzer(),
-                    Map.of(CATEGORY_FIELD, CATEGORY_BOOST)
-            ).parse(req.queryStr());
+//            var q = new MultiFieldQueryParser(
+//                    req.fields(),
+//                    new StandardAnalyzer(),
+//                    Map.of(CATEGORY_FIELD, CATEGORY_BOOST)
+//            ).parse(req.queryStr());
+            var q = buildQuery(req);
 
             var res = searcher.search(q, MAX_HITS);
 
@@ -58,8 +60,8 @@ public class Searcher {
                     .sorted((a, b) -> Float.compare(b.getScore(), a.getScore()))
                     .collect(toList());
 
-        } catch (ParseException e) {
-            throw new IllegalStateException("Cannnot parse " + req);
+//        } catch (ParseException e) {
+//            throw new IllegalStateException("Cannnot parse " + req);
         } catch (IOException e) {
             throw new UncheckedIOException(e);
         }
@@ -74,6 +76,23 @@ public class Searcher {
         } catch (IOException e) {
             throw new UncheckedIOException(e);
         }
+    }
+
+    private Query buildQuery(SearchRequest req) {
+        var q = new BooleanQuery.Builder();
+        if (req.getCategory() != null) {
+            q.add(
+                    new TermQuery(new Term(CATEGORY_FIELD, req.getCategory())),
+                    BooleanClause.Occur.MUST
+            );
+        }
+        if (req.getArticle() != null) {
+            q.add(
+                    new TermQuery(new Term(ARTICLES_FIELD, req.getArticle())),
+                    BooleanClause.Occur.SHOULD
+            );
+        }
+        return q.build();
     }
 
     @SneakyThrows

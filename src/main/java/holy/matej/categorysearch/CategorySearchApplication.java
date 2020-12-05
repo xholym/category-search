@@ -67,7 +67,7 @@ public class CategorySearchApplication {
 
         var writer = new SearchResultWriter();
         writer.writeTopResults(res, System.out, ntop);
-        var path = Path.of(System.getProperty("user.dir")).resolve("stats.txt");
+        var path = Path.of(System.getProperty("user.dir")).resolve("result.txt");
         writer.writeResults(res, path);
         System.out.println("More results can be found in file " + path);
     }

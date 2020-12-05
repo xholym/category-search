@@ -21,13 +21,10 @@ public class CategoryWriter {
     public static final String articleSeparator = ":::";
     public static final String nameLinkSeparator = ",,,";
 
-    private final Path parsedDir;
-
-    public void write(Stream<Category> categories, Language lang) {
-        var target = parsedDir.resolve(lang.name() + ".csv").toFile();
+    public void write(Path targetPath, Stream<Category> categories) {
+        var target = targetPath.toFile();
 
         try (var f = new FileWriter(target, UTF_8)) {
-            writeHeader(f);
 
             categories.forEach(it -> write(f, it));
 
@@ -47,17 +44,5 @@ public class CategoryWriter {
                 .collect(joining(articleSeparator));
         f.append(articleStr)
                 .append("\n");
-    }
-
-
-    @SneakyThrows
-    private void writeHeader(FileWriter f) {
-        f.append("category" + categoryArticleSeparator
-                + "articleName 0" + nameLinkSeparator + "articleLink 0"
-                + articleSeparator
-                + "articleName 1" + nameLinkSeparator + "articleLink 1"
-                + articleSeparator + "..."
-                + "articleName n" + nameLinkSeparator + "articleLink n"
-        );
     }
 }
