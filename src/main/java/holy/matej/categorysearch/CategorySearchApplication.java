@@ -94,6 +94,8 @@ public class CategorySearchApplication {
                 case "-c", "--category" -> {
                     if (i + 1 >= args.length)
                         throw new IllegalArgumentException("missing value after " + args[i] + " argument");
+                    if (category != null)
+                        throw new IllegalArgumentException("Category already entered! Wrong argument " + args[i] + " " + args[i + 1]);
                     category = args[i + 1];
                     i++;
                 }

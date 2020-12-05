@@ -1,12 +1,10 @@
 package holy.matej.categorysearch.process;
 
 import holy.matej.categorysearch.data.Category;
-import holy.matej.categorysearch.process.io.CategoryReader;
 import holy.matej.categorysearch.process.io.CategoryWriter;
 
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.RandomAccessFile;
 import java.io.UncheckedIOException;
 import java.nio.file.Path;
 import java.util.stream.Stream;
@@ -21,7 +19,6 @@ public class CategoryMerger {
 
     public void merge(Stream<Category> mappings, Path mergedPath) {
 
-//                    .sorted(Comparator.comparing(a -> a.get("category")))
         try (var out = new FileWriter(mergedPath.toFile())) {
 
             var iterator = (Iterable<Category>) mappings::iterator;
