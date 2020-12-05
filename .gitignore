@@ -25,6 +25,7 @@ out/
 /bigdata
 /data/index
 /data/parsed
+/data/parsedmappings
 result.txt
 stats.txt
 

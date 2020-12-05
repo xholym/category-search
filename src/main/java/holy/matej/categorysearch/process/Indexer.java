@@ -28,11 +28,10 @@ public class Indexer {
     public void index(Stream<Category> categories, Language lang) {
         try (var index = indexWriter(lang)) {
 
-            categories.parallel()
-                    .forEach(c -> {
-                        var doc = categoryMapper.toDoc(c);
-                        addToIndex(index, doc);
-                    });
+            categories.forEach(c -> {
+                var doc = categoryMapper.toDoc(c);
+                addToIndex(index, doc);
+            });
 
         } catch (IOException e) {
             throw new UncheckedIOException(e);

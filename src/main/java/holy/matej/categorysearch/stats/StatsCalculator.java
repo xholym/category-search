@@ -1,5 +1,6 @@
 package holy.matej.categorysearch.stats;
 
+import holy.matej.categorysearch.data.Category;
 import holy.matej.categorysearch.lang.Language;
 import holy.matej.categorysearch.process.io.CategoryReader;
 
@@ -7,7 +8,6 @@ import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map.Entry;
-import java.util.stream.Collectors;
 
 public class StatsCalculator {
 
@@ -24,7 +24,7 @@ public class StatsCalculator {
 
     public StatsResult calc(Language lang) {
         var parsedPath = parsedDir.resolve(lang.name());
-        var categories = categoryReader.read(parsedPath).iterator();
+        var categories = (Iterable<Category>) categoryReader.read(parsedPath)::iterator;
 
         int count = 0;
 
@@ -38,8 +38,7 @@ public class StatsCalculator {
 
         var articleSizeFrequency = new HashMap<Integer, Integer>();
 
-        while (categories.hasNext()) {
-            var cat = categories.next();
+        for (var cat: categories) {
             var name = cat.getName();
             var articlesSize = cat.getArticles().size();
 
@@ -75,10 +74,9 @@ public class StatsCalculator {
 
         var avgRoundedArticles = Math.round(avgArticles);
         var withAvgArticles = new HashSet<String>();
-        categories = categoryReader.read(parsedPath).iterator();
+        categories = categoryReader.read(parsedPath)::iterator;
 
-        while (categories.hasNext()) {
-            var cat = categories.next();
+        for (var cat: categories) {
             var name = cat.getName();
             var articlesSize = cat.getArticles().size();
 
@@ -87,7 +85,6 @@ public class StatsCalculator {
 
             if (articlesSize == mode)
                 withModeArticles.add(name);
-
         }
 
         return StatsResult.builder()

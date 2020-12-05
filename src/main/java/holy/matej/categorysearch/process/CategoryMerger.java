@@ -1,41 +1,51 @@
 package holy.matej.categorysearch.process;
 
 import holy.matej.categorysearch.data.Category;
-import lombok.RequiredArgsConstructor;
+import holy.matej.categorysearch.process.io.CategoryReader;
+import holy.matej.categorysearch.process.io.CategoryWriter;
 
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.RandomAccessFile;
+import java.io.UncheckedIOException;
+import java.nio.file.Path;
 import java.util.stream.Stream;
 
-@RequiredArgsConstructor
 public class CategoryMerger {
 
+    private final CategoryWriter categoryWriter;
 
-    public Stream<Category> merge(Stream<Category> articleCategories) {
+    public CategoryMerger() {
+        this.categoryWriter = new CategoryWriter();
+    }
 
-        var data = articleCategories.iterator();
+    public void merge(Stream<Category> mappings, Path mergedPath) {
+
 //                    .sorted(Comparator.comparing(a -> a.get("category")))
+        try (var out = new FileWriter(mergedPath.toFile())) {
 
-                Category cat = null;
-        Category walk;
-        Stream.Builder<Category> res = Stream.builder();
+            var iterator = (Iterable<Category>) mappings::iterator;
+            Category cat = null;
+            for (var walk: iterator) {
+                var name = walk.getName();
+                var article = walk.getArticles().get(0);
+                if (cat == null) {
+                    cat = Category.of(name, article);
+                } else if (name.equals(cat.getName())) {
+                    cat.addArticle(article);
+                } else {
 
-        while (data.hasNext()) {
-            walk = data.next();
-            var name = walk.getName();
-            var article = walk.getArticles().get(0);
-
-            if (cat == null) {
-                cat = Category.of(name, article);
-            } else if (name.equals(cat.getName())) {
-                cat.addArticle(article);
-            } else {
-                res.accept(cat);
-                cat = Category.of(name, article);
+                    categoryWriter.write(out, cat);
+                    cat = Category.of(name, article);
+                }
             }
-        }
-        if (cat != null)
-            res.accept(cat);
+            if (cat != null)
+                categoryWriter.write(out, cat);
 
-        return res.build();
+        } catch (IOException e) {
+            throw new UncheckedIOException(e);
+        }
+
     }
 
 }

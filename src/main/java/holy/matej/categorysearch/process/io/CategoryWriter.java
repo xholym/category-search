@@ -33,16 +33,20 @@ public class CategoryWriter {
         }
     }
 
-    @SneakyThrows
-    private void write(FileWriter f, Category cat) {
-        f.append(cat.getName())
-                .append(categoryArticleSeparator);
+    public void write(FileWriter f, Category cat) {
+        try {
+            f.append(cat.getName())
+                    .append(categoryArticleSeparator);
 
-        var articleStr = cat.getArticles()
-                .stream()
-                .map(a -> a.getName() + nameLinkSeparator + a.getLink())
-                .collect(joining(articleSeparator));
-        f.append(articleStr)
-                .append("\n");
+            var articleStr = cat.getArticles()
+                    .stream()
+                    .map(a -> a.getName() + nameLinkSeparator + a.getLink())
+                    .collect(joining(articleSeparator));
+            f.append(articleStr)
+                    .append("\n");
+
+        } catch (IOException e) {
+            throw new UncheckedIOException(e);
+        }
     }
 }

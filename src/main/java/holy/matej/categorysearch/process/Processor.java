@@ -62,20 +62,16 @@ public class Processor {
 
         System.out.println("Sorting mappings");
         sortFile(mappingsPath);
+        var parsedPath = parsedDir.resolve(lang.name());
 
-        System.out.println("Reading mappings");
         mappings = categoryReader.read(mappingsPath);
 
         System.out.println("Merging category article mappings to categories");
-        var categories = categoryMerger.merge(mappings);
+        categoryMerger.merge(mappings, parsedPath);
         // - parsing
 
-        var parsedPath = parsedDir.resolve(lang.name());
-        System.out.println("Writing categories");
-        categoryWriter.write(parsedPath, categories);
-
         System.out.println("Reading categories");
-        categories = categoryReader.read(parsedPath);
+        var categories = categoryReader.read(parsedPath);
 
         System.out.println("Indexing");
         indexer.index(categories, lang);

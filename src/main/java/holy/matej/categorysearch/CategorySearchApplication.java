@@ -87,9 +87,6 @@ public class CategorySearchApplication {
     }
 
     private static SearchRequest parseSearchRequest(String[] args) {
-        if (!args[3].startsWith("-") && args.length == 4)
-            return new SearchRequest(args[3], null);
-
         String category = null;
         String article = null;
         for (int i = 3; i < args.length; i++) {
@@ -106,7 +103,11 @@ public class CategorySearchApplication {
                     article = args[i + 1];
                     i++;
                 }
-                default -> throw new IllegalArgumentException("wrong argument " + args[i]);
+                default -> {
+                    if (category != null)
+                        throw new IllegalArgumentException("Category already entered! Wrong argument " + args[i]);
+                    category = args[i];
+                }
             }
         }
         return new SearchRequest(category, article);

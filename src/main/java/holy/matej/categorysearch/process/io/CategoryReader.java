@@ -19,30 +19,31 @@ public class CategoryReader {
     public Stream<Category> read(Path target) {
         return Files.lines(target)
                 .skip(1)    // skip header
-                .map(l -> {
-                            var parts = l.split(categoryArticleSeparator);
-                            if (parts.length < 2) {
-                                throw new InvalidLine(parts[0], parts.length, categoryArticleSeparator);
-                            }
+                .map(this::parseLine);
+    }
 
-                            var category = Category.empty(parts[0]);
+    public Category parseLine(String line) {
+        var parts = line.split(categoryArticleSeparator);
+        if (parts.length < 2) {
+            throw new InvalidLine(parts[0], parts.length, categoryArticleSeparator);
+        }
 
-                            for (var a : parts[1].split(articleSeparator)) {
-                                var props = a.split(nameLinkSeparator);
-                                if (props.length != 2)
-                                    throw new InvalidLine(parts[0], parts.length, nameLinkSeparator);
+        var category = Category.empty(parts[0]);
 
-                                category.addArticle(
-                                        Article.of(
-                                                props[0],
-                                                props[1]
-                                        )
-                                );
-                            }
+        for (var a : parts[1].split(articleSeparator)) {
+            var props = a.split(nameLinkSeparator);
+            if (props.length != 2)
+                throw new InvalidLine(parts[0], parts.length, nameLinkSeparator);
 
-                            return category;
-                        }
-                );
+            category.addArticle(
+                    Article.of(
+                            props[0],
+                            props[1]
+                    )
+            );
+        }
+
+        return category;
     }
 
     public static class InvalidLine extends RuntimeException {
