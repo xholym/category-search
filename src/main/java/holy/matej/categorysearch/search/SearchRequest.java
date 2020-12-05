@@ -32,10 +32,10 @@ public class SearchRequest {
     public String queryStr() {
         var s = new StringBuilder();
         if (category != null) {
-            s.append("(" + CATEGORY_FIELD + ":" + category + ") ");
+            s.append("(" + CATEGORY_FIELD + ":\"").append(category).append("\") ");
         }
         if (article != null)
-            s.append("(" + ARTICLES_FIELD + ":" + article + ")");
+            s.append("(" + ARTICLES_FIELD + ":\"").append(article).append("\")");
 
         return s.toString();
     }

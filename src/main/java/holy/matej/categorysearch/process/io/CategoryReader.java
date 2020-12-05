@@ -15,11 +15,9 @@ import static holy.matej.categorysearch.process.io.CategoryWriter.*;
 @RequiredArgsConstructor
 public class CategoryReader {
 
-    private final Path parsedDir;
-
     @SneakyThrows
-    public Stream<Category> read(Language lang) {
-        return Files.lines(parsedDir.resolve(lang.name() + ".csv"))
+    public Stream<Category> read(Path target) {
+        return Files.lines(target)
                 .skip(1)    // skip header
                 .map(l -> {
                             var parts = l.split(categoryArticleSeparator);

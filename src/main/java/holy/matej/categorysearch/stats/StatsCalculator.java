@@ -19,11 +19,12 @@ public class StatsCalculator {
         parsedDir = dataDir.resolve("parsed");
         if (!parsedDir.toFile().exists())
             throw new IllegalStateException("No parsed data found! Must first parse data using the index command.");
-        categoryReader = new CategoryReader(parsedDir);
+        categoryReader = new CategoryReader();
     }
 
     public StatsResult calc(Language lang) {
-        var categories = categoryReader.read(lang).iterator();
+        var parsedPath = parsedDir.resolve(lang.name());
+        var categories = categoryReader.read(parsedPath).iterator();
 
         int count = 0;
 
@@ -74,7 +75,7 @@ public class StatsCalculator {
 
         var avgRoundedArticles = Math.round(avgArticles);
         var withAvgArticles = new HashSet<String>();
-        categories = categoryReader.read(lang).iterator();
+        categories = categoryReader.read(parsedPath).iterator();
 
         while (categories.hasNext()) {
             var cat = categories.next();
