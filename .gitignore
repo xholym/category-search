@@ -26,6 +26,8 @@ out/
 /data/index
 /data/parsed
 /data/parsedmappings
+/version
 result.txt
 stats.txt
+error-log.txt
 
