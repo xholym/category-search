@@ -26,16 +26,14 @@ import static java.util.stream.Collectors.toSet;
 public class Searcher {
 
     public static final int MAX_HITS = 1000;
-    private final Path indexDir;
     private final CategoryDocumentMapper categoryMapper;
 
-    public Searcher(Path dataDir) {
-        this.indexDir = dataDir.resolve("index");
+    public Searcher() {
         categoryMapper = new CategoryDocumentMapper();
     }
 
-    public List<SearchResult> search(SearchRequest req, Language lang) {
-        try (var reader = indexReader(lang)) {
+    public List<SearchResult> search(SearchRequest req, Path indexFile) {
+        try (var reader = indexReader(indexFile)) {
             var searcher = new IndexSearcher(reader);
 
             var q = buildQuery(req);
@@ -89,10 +87,10 @@ public class Searcher {
     }
 
     @SneakyThrows
-    private IndexReader indexReader(Language lang) {
+    private IndexReader indexReader(Path indexFile) {
 
         return DirectoryReader.open(
-                FSDirectory.open(indexDir.resolve(lang.name()))
+                FSDirectory.open(indexFile)
         );
     }
 }

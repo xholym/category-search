@@ -59,8 +59,10 @@ public class CategorySearchApplication {
     private static void search(Path dataDir, SearchRequest searchReq, Language lang) {
         System.out.println("Searching for '" + searchReq + "'");
 
-        var s = new Searcher(dataDir);
-        var res = s.search(searchReq, lang);
+        var indexFile = dataDir.resolve("index").resolve(lang.name());
+
+        var s = new Searcher();
+        var res = s.search(searchReq, indexFile);
 
         System.out.println("Found: " + res.size() + " results");
         var ntop = 5;

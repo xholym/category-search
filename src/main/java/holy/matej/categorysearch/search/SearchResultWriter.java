@@ -2,6 +2,7 @@ package holy.matej.categorysearch.search;
 
 import lombok.SneakyThrows;
 import org.apache.commons.text.StringEscapeUtils;
+import org.apache.commons.text.lookup.StringLookupFactory;
 
 import java.io.OutputStream;
 import java.io.PrintStream;
@@ -39,6 +40,19 @@ public class SearchResultWriter {
     }
 
     public static String encode(String s) {
-        return StringEscapeUtils.unescapeJava(s);
+        // Decode unicode escaped characters
+        //   like '\u00E9' to é
+        if (s.contains("\\"))
+            s = StringEscapeUtils.unescapeJava(s);
+
+        // Decode utf-8 characters
+        //   like %C3B6% to ö
+        //   for example "Hello%20World%21" becomes "Hello World!"
+        if (s.contains("%"))
+            s = StringLookupFactory.INSTANCE
+                    .urlDecoderStringLookup()
+                    .lookup(s);
+
+        return s;
     }
 }

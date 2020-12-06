@@ -17,16 +17,14 @@ import java.util.stream.Stream;
 
 public class Indexer {
 
-    private final Path indexDir;
     private final CategoryDocumentMapper categoryMapper;
 
-    public Indexer(Path indexDir) {
-        this.indexDir = indexDir;
+    public Indexer() {
         categoryMapper = new CategoryDocumentMapper();
     }
 
-    public void index(Stream<Category> categories, Language lang) {
-        try (var index = indexWriter(lang)) {
+    public void index(Stream<Category> categories, Path indexFile) {
+        try (var index = indexWriter(indexFile)) {
 
             categories.forEach(c -> {
                 var doc = categoryMapper.toDoc(c);
@@ -43,9 +41,9 @@ public class Indexer {
         index.addDocument(doc);
     }
 
-    private IndexWriter indexWriter(Language lang) {
+    private IndexWriter indexWriter(Path indexFile) {
         try {
-            var dir = FSDirectory.open(indexDir.resolve(lang.name()));
+            var dir = FSDirectory.open(indexFile);
             var cfg = new IndexWriterConfig(new StandardAnalyzer());
 
             return new IndexWriter(dir, cfg);

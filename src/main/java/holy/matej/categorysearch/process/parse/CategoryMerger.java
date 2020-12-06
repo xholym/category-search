@@ -1,4 +1,4 @@
-package holy.matej.categorysearch.process;
+package holy.matej.categorysearch.process.parse;
 
 import holy.matej.categorysearch.data.Category;
 import holy.matej.categorysearch.process.io.CategoryWriter;
