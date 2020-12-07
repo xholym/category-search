@@ -1,16 +1,16 @@
-package holy.matej.categorysearch.process.parse;
+package ir.dbpedia.categorysearch.process.parse;
 
 import com.google.code.externalsorting.ExternalSort;
-import holy.matej.categorysearch.data.Category;
-import holy.matej.categorysearch.process.io.CategoryReader;
-import holy.matej.categorysearch.process.io.CategoryWriter;
+import ir.dbpedia.categorysearch.data.Category;
+import ir.dbpedia.categorysearch.process.io.CategoryReader;
+import ir.dbpedia.categorysearch.process.io.CategoryWriter;
 import lombok.SneakyThrows;
 
 import java.nio.file.Path;
 import java.util.Comparator;
 import java.util.stream.Stream;
 
-import static holy.matej.categorysearch.process.io.CategoryWriter.categoryArticleSeparator;
+import static ir.dbpedia.categorysearch.process.io.CategoryWriter.categoryArticleSeparator;
 
 public class Parser {
 

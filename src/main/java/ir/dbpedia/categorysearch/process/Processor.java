@@ -1,7 +1,7 @@
-package holy.matej.categorysearch.process;
+package ir.dbpedia.categorysearch.process;
 
-import holy.matej.categorysearch.lang.Language;
-import holy.matej.categorysearch.process.parse.Parser;
+import ir.dbpedia.categorysearch.lang.Language;
+import ir.dbpedia.categorysearch.process.parse.Parser;
 import lombok.RequiredArgsConstructor;
 
 import java.io.File;

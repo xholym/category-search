@@ -1,8 +1,8 @@
-package holy.matej.categorysearch.process;
+package ir.dbpedia.categorysearch.process;
 
-import holy.matej.categorysearch.data.Category;
-import holy.matej.categorysearch.lang.Language;
-import holy.matej.categorysearch.search.CategoryDocumentMapper;
+import ir.dbpedia.categorysearch.data.Category;
+import ir.dbpedia.categorysearch.lang.Language;
+import ir.dbpedia.categorysearch.search.CategoryDocumentMapper;
 import lombok.SneakyThrows;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.document.Document;

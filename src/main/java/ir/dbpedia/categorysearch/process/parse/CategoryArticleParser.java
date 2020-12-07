@@ -1,7 +1,7 @@
-package holy.matej.categorysearch.process.parse;
+package ir.dbpedia.categorysearch.process.parse;
 
-import holy.matej.categorysearch.data.Article;
-import holy.matej.categorysearch.data.Category;
+import ir.dbpedia.categorysearch.data.Article;
+import ir.dbpedia.categorysearch.data.Category;
 
 import java.util.List;
 import java.util.regex.Pattern;

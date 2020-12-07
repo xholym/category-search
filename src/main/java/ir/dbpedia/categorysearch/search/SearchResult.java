@@ -1,7 +1,7 @@
-package holy.matej.categorysearch.search;
+package ir.dbpedia.categorysearch.search;
 
-import holy.matej.categorysearch.data.Article;
-import holy.matej.categorysearch.data.Category;
+import ir.dbpedia.categorysearch.data.Article;
+import ir.dbpedia.categorysearch.data.Category;
 import lombok.NonNull;
 import lombok.Value;
 

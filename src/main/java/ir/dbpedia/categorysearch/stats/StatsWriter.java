@@ -1,4 +1,4 @@
-package holy.matej.categorysearch.stats;
+package ir.dbpedia.categorysearch.stats;
 
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
@@ -9,7 +9,7 @@ import java.io.UncheckedIOException;
 import java.nio.file.Path;
 import java.util.List;
 
-import static holy.matej.categorysearch.search.SearchResultWriter.encode;
+import static ir.dbpedia.categorysearch.search.SearchResultWriter.encode;
 import static java.nio.charset.StandardCharsets.UTF_8;
 
 @RequiredArgsConstructor

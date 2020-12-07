@@ -1,4 +1,4 @@
-package holy.matej.categorysearch.search;
+package ir.dbpedia.categorysearch.search;
 
 import lombok.SneakyThrows;
 import org.apache.commons.text.StringEscapeUtils;

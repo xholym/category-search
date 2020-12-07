@@ -1,7 +1,7 @@
-package holy.matej.categorysearch.search;
+package ir.dbpedia.categorysearch.search;
 
-import holy.matej.categorysearch.data.Article;
-import holy.matej.categorysearch.data.Category;
+import ir.dbpedia.categorysearch.data.Article;
+import ir.dbpedia.categorysearch.data.Category;
 import org.apache.commons.text.StringEscapeUtils;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;

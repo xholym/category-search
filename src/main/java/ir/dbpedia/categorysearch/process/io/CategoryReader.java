@@ -1,8 +1,8 @@
-package holy.matej.categorysearch.process.io;
+package ir.dbpedia.categorysearch.process.io;
 
-import holy.matej.categorysearch.data.Article;
-import holy.matej.categorysearch.data.Category;
-import holy.matej.categorysearch.lang.Language;
+import ir.dbpedia.categorysearch.data.Article;
+import ir.dbpedia.categorysearch.data.Category;
+import ir.dbpedia.categorysearch.lang.Language;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 
@@ -10,7 +10,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.stream.Stream;
 
-import static holy.matej.categorysearch.process.io.CategoryWriter.*;
+import static ir.dbpedia.categorysearch.process.io.CategoryWriter.*;
 
 @RequiredArgsConstructor
 public class CategoryReader {

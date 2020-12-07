@@ -65,7 +65,7 @@ compileTestKotlin {
 }
 
 ext {
-    javaMainClass = "holy.matej.categorysearch.CategorySearchApplication"
+    javaMainClass = "ir.dbpedia.categorysearch.CategorySearchApplication"
 }
 
 application {

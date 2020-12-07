@@ -1,13 +1,13 @@
-package holy.matej.categorysearch;
+package ir.dbpedia.categorysearch;
 
-import holy.matej.categorysearch.lang.Language;
-import holy.matej.categorysearch.process.Processor;
-import holy.matej.categorysearch.search.SearchRequest;
-import holy.matej.categorysearch.search.SearchResultWriter;
-import holy.matej.categorysearch.search.Searcher;
-import holy.matej.categorysearch.stats.StatsCalculator;
-import holy.matej.categorysearch.stats.StatsResult;
-import holy.matej.categorysearch.stats.StatsWriter;
+import ir.dbpedia.categorysearch.lang.Language;
+import ir.dbpedia.categorysearch.process.Processor;
+import ir.dbpedia.categorysearch.search.SearchRequest;
+import ir.dbpedia.categorysearch.search.SearchResultWriter;
+import ir.dbpedia.categorysearch.search.Searcher;
+import ir.dbpedia.categorysearch.stats.StatsCalculator;
+import ir.dbpedia.categorysearch.stats.StatsResult;
+import ir.dbpedia.categorysearch.stats.StatsWriter;
 
 import java.io.*;
 import java.nio.file.Path;

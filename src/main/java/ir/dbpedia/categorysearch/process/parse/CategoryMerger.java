@@ -1,7 +1,7 @@
-package holy.matej.categorysearch.process.parse;
+package ir.dbpedia.categorysearch.process.parse;
 
-import holy.matej.categorysearch.data.Category;
-import holy.matej.categorysearch.process.io.CategoryWriter;
+import ir.dbpedia.categorysearch.data.Category;
+import ir.dbpedia.categorysearch.process.io.CategoryWriter;
 
 import java.io.FileWriter;
 import java.io.IOException;

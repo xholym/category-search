@@ -1,7 +1,6 @@
-package holy.matej.categorysearch.search;
+package ir.dbpedia.categorysearch.search;
 
-import holy.matej.categorysearch.data.Category;
-import holy.matej.categorysearch.lang.Language;
+import ir.dbpedia.categorysearch.data.Category;
 import lombok.SneakyThrows;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.index.DirectoryReader;
@@ -17,8 +16,8 @@ import java.io.UncheckedIOException;
 import java.nio.file.Path;
 import java.util.List;
 
-import static holy.matej.categorysearch.search.CategoryDocumentMapper.ARTICLES_FIELD;
-import static holy.matej.categorysearch.search.CategoryDocumentMapper.CATEGORY_FIELD;
+import static ir.dbpedia.categorysearch.search.CategoryDocumentMapper.ARTICLES_FIELD;
+import static ir.dbpedia.categorysearch.search.CategoryDocumentMapper.CATEGORY_FIELD;
 import static java.util.Arrays.stream;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toSet;

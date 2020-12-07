@@ -1,6 +1,6 @@
-package holy.matej.categorysearch.process;
+package ir.dbpedia.categorysearch.process;
 
-import holy.matej.categorysearch.lang.Language;
+import ir.dbpedia.categorysearch.lang.Language;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 

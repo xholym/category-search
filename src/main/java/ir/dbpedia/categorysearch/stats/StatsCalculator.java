@@ -1,8 +1,8 @@
-package holy.matej.categorysearch.stats;
+package ir.dbpedia.categorysearch.stats;
 
-import holy.matej.categorysearch.data.Category;
-import holy.matej.categorysearch.lang.Language;
-import holy.matej.categorysearch.process.io.CategoryReader;
+import ir.dbpedia.categorysearch.data.Category;
+import ir.dbpedia.categorysearch.lang.Language;
+import ir.dbpedia.categorysearch.process.io.CategoryReader;
 
 import java.nio.file.Path;
 import java.util.HashMap;

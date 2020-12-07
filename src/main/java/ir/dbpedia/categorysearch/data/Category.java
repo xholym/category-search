@@ -1,4 +1,4 @@
-package holy.matej.categorysearch.data;
+package ir.dbpedia.categorysearch.data;
 
 import lombok.NonNull;
 import lombok.Value;

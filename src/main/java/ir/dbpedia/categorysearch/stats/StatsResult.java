@@ -1,6 +1,6 @@
-package holy.matej.categorysearch.stats;
+package ir.dbpedia.categorysearch.stats;
 
-import holy.matej.categorysearch.lang.Language;
+import ir.dbpedia.categorysearch.lang.Language;
 import lombok.Builder;
 import lombok.Value;
 

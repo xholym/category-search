@@ -1,4 +1,4 @@
-package holy.matej.categorysearch.lang;
+package ir.dbpedia.categorysearch.lang;
 
 public enum Language {
     en,
