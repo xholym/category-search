@@ -15,7 +15,7 @@ plugins {
 }
 
 
-group = 'holy.matej'
+group = 'ir.dbpedia'
 version = '0.0.1'
 
 sourceCompatibility = JavaVersion.VERSION_14
